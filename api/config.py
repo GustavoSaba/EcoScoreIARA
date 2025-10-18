@@ -1,0 +1,1 @@
+EXCEL_PATH = r"C:\Users\ihorr\Desktop\Graduacao\1. CienciaComputacao\1. Semestre\1. APS\database\banco.xlsx"
