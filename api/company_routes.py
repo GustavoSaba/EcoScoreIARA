@@ -1,7 +1,7 @@
 import pandas as pd
 from fastapi import APIRouter, HTTPException
 from config import EXCEL_PATH
-from __modules import autenticar_empresa, autenticar_usuario, user_amdin
+from __modules import autenticar_empresa, autenticar_usuario, user_admin
 from __classes import Empresa, EmpresaUpdate
 
 company_router = APIRouter(prefix="/company", tags=["company"])
@@ -13,7 +13,7 @@ async def get_all(user_id: int):
     auth = autenticar_usuario(user_id)
 
     if auth:
-        admin = user_amdin(auth, user_id)
+        admin = user_admin(auth, user_id)
         if admin:
             companies = df_empresa.to_dict(orient="records")
     return companies

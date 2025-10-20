@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 import pandas as pd
+import re
 from config import EXCEL_PATH
 
 
@@ -23,7 +24,7 @@ def autenticar_usuario(user_id: int):
         raise HTTPException(status_code=404, detail="Usuario não autenticado!")
     return True
 
-def user_amdin(auth: bool, user_id: int):
+def user_admin(auth: bool, user_id: int):
     df_login = pd.read_excel(EXCEL_PATH, sheet_name='user')
     login = df_login[
         (df_login['cod_user'] == user_id) &
@@ -31,4 +32,16 @@ def user_amdin(auth: bool, user_id: int):
     ]
     if login.empty:
         raise HTTPException(status_code=404, detail="Não é administrador!")
+    return True
+
+def conferencia_senha(senha: str) -> bool:
+    if len(senha) < 6:
+        return False
+
+    if not re.search(r"\d", senha):
+        return False
+
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", senha):
+        return False
+
     return True
