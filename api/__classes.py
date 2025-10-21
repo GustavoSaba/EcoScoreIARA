@@ -8,6 +8,6 @@ class Empresa(BaseModel):
 
 class EmpresaUpdate(BaseModel):
     empresa_nome: str | None = None
-    empresa_cnpj: str | None = None
+    empresa_cnpj: int | None = None
     empresa_email: str | None = None
     empresa_senha: str | None = None

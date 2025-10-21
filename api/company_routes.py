@@ -65,7 +65,7 @@ async def atualizar_empresa(cod_empresa: int, dados: EmpresaUpdate):
         if not df_empresa['cod_empresa'].eq(cod_empresa).any():
             raise HTTPException(status_code=404, detail="Empresa não encontrada")
 
-        atualizacoes = dados.dict(exclude_unset=True) 
+        atualizacoes = dados.dict(exclude_unset=True)
         for coluna, valor in atualizacoes.items():
             df_empresa.loc[df_empresa['cod_empresa'] == cod_empresa, coluna] = valor
 
