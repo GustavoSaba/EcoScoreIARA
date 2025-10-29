@@ -1,8 +1,7 @@
 import customtkinter as ctk
 import requests
 from tkinter import messagebox
-
-API_URL = "http://127.0.0.1:8000/login"
+from model.config_model.config import API_URL
 
 def iniciar_gui():
     login_app = ctk.CTk()
