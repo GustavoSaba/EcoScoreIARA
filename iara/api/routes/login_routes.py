@@ -1,6 +1,6 @@
 import pandas as pd
 from fastapi import APIRouter, HTTPException
-from config import EXCEL_PATH
+from api.config_api.config import EXCEL_PATH
 
 login_router = APIRouter(prefix="/login", tags=["login"])
 

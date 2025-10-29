@@ -1,8 +1,8 @@
 import pandas as pd
 from fastapi import APIRouter, HTTPException
-from config import EXCEL_PATH
-from __modules import autenticar_empresa, autenticar_usuario, user_admin
-from __classes import Empresa, EmpresaUpdate
+from api.config_api.config import EXCEL_PATH
+from api.modules.__modules import autenticar_empresa, autenticar_usuario, user_admin
+from api.modules.__classes import Empresa, EmpresaUpdate
 
 company_router = APIRouter(prefix="/company", tags=["company"])
 
