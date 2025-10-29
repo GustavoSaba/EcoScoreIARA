@@ -5,12 +5,12 @@ from tkinter import messagebox
 API_URL = "http://127.0.0.1:8000/login"
 
 def iniciar_gui():
+    login_app = ctk.CTk()
+    login_app.title("EcoScore - Login")
+    login_app.geometry("400x350")
+    login_app.resizable(False, False)
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("green")
-
-    app = ctk.CTk()
-    app.title("EcoScore - Login")
-    app.geometry("400x350")
 
     def fazer_login():
         cod_empresa = entry_cod.get()
@@ -30,7 +30,6 @@ def iniciar_gui():
                     "empresa_senha": senha
                 }
             )
-
             if response.status_code == 200:
                 data = response.json()
                 messagebox.showinfo(
@@ -43,7 +42,7 @@ def iniciar_gui():
         except Exception as e:
             messagebox.showerror("Erro", f"Falha ao conectar com o servidor: {e}")
 
-    frame = ctk.CTkFrame(app)
+    frame = ctk.CTkFrame(login_app)
     frame.pack(pady=40, padx=30, fill="both", expand=True)
 
     titulo = ctk.CTkLabel(frame, text="Login EcoScore", font=("Arial", 22, "bold"))
@@ -68,4 +67,4 @@ def iniciar_gui():
     )
     btn_login.pack(pady=20)
 
-    app.mainloop()
+    login_app.mainloop()
