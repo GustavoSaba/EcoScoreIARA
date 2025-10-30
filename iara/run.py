@@ -8,7 +8,7 @@ from model.model_loading.model_loading import show_loading_screen
 API_URL = "http://127.0.0.1:8000"
 
 def run_api():
-    print("\033[93m[API] Iniciando servidor FastAPI...\033[0m")
+    print("\033[93m[API] Iniciando servidor Fa6stAPI...\033[0m")
     uvicorn.run("api.main:app", host="127.0.0.1", port=8000, reload=False, log_level="info")
 
 def verificar_api(max_tentativas=10, intervalo=1):
