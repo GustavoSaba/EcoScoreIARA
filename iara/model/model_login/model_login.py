@@ -3,6 +3,8 @@ import requests
 import pywinstyles as pwstyles
 from tkinter import messagebox
 from model.config_model.config import API_URL, BG_LOGIN, PROFILE, PASSWORD, EMAIL
+from model.model_cadastro.model_cadastro import iniciar_gui_cadastro
+from model.model_loading.model_loading import show_loading_screen
 from PIL import Image
 
 def iniciar_gui():
@@ -10,6 +12,7 @@ def iniciar_gui():
     login_app.title("EcoScore - Login")
     login_app.geometry("1093x626")
     login_app.resizable(False, False)
+    login_app.config(bg="#FFFAFA")
     ctk.set_appearance_mode("light")
 
     def fazer_login():
@@ -43,7 +46,8 @@ def iniciar_gui():
             messagebox.showerror("Erro", f"Falha ao conectar com o servidor: {e}")
 
     def cadastro():
-        print("Indo para o cadastro")
+        login_app.destroy()
+        show_loading_screen(iniciar_gui_cadastro)
 
     frame = ctk.CTkFrame(login_app)
     frame.pack(expand=True, fill="both", pady=40)
@@ -179,16 +183,16 @@ def iniciar_gui():
     profile_label = ctk.CTkLabel(entry_cod, image=profile, text="")
     profile_label.place(relx=0.05, rely=0.2)
 
+    email = ctk.CTkImage(Image.open(EMAIL), size=(20, 16))
+    email_label = ctk.CTkLabel(entry_email, image=email, text="")
+    email_label.place(relx=0.05, rely=0.2)
+
     password = ctk.CTkImage(Image.open(PASSWORD), size=(16, 19))
     password_label = ctk.CTkLabel(entry_senha, image=password, text="")
     password_label.place(relx=0.05, rely=0.2)
 
-    email = ctk.CTkImage(Image.open(EMAIL), size=(16, 19))
-    email_label = ctk.CTkLabel(entry_email, image=email, text="")
-    email_label.place(relx=0.05, rely=0.2)
-
-    pwstyles.set_opacity(card, 1, '#000001')
-    pwstyles.set_opacity(text_left, 1, '#000001')
+    pwstyles.set_opacity(card, color='#000001')
+    pwstyles.set_opacity(text_left, color='#000001')
     #pwstyles.set_opacity(btn_cadastro, 1, '#000001')
 
     login_app.mainloop()
