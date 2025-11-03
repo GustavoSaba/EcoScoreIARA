@@ -1,9 +1,11 @@
+from session import current_user
 import customtkinter as ctk
 import requests
 import pywinstyles as pwstyles
 from tkinter import messagebox
 from model.config_model.config import API_URL, BG_LOGIN, PROFILE, PASSWORD, EMAIL
 from model.model_cadastro.model_cadastro import iniciar_gui_cadastro
+from model.model_perfil.model_perfil import iniciar_gui_perfil
 from model.model_loading.model_loading import show_loading_screen
 from PIL import Image
 
@@ -30,15 +32,20 @@ def iniciar_gui():
                 params={
                     "cod_empresa": cod_empresa,
                     "empresa_email": email,
-                    "empresa_senha": senha
+                    "empresa_senha": senha,
                 }
             )
             if response.status_code == 200:
                 data = response.json()
+                print(f"DEBUG: Dados recebidos da API: {data}")
+                current_user.login(data)
+                print(f"DEBUG: Estado do current_user após o login: {current_user.__dict__}")
                 messagebox.showinfo(
                     "Sucesso",
                     f"Login realizado!\nEmpresa: {data['empresa_email']}"
                 )
+                login_app.destroy()
+                show_loading_screen(iniciar_gui_perfil)
             else:
                 erro = response.json().get("detail", "Erro desconhecido.")
                 messagebox.showerror("Erro", erro)

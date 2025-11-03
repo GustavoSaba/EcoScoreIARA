@@ -8,12 +8,15 @@ login_router = APIRouter(prefix="/login", tags=["login"])
 async def login_empresa(cod_empresa: int, empresa_email: str, empresa_senha: int):
     df_database = pd.read_excel(EXCEL_PATH, sheet_name=None)
 
+
     df_empresa = df_database["empresa"]
     df_login_empresa = df_database.get("login_empresa", pd.DataFrame(columns=["cod_login", "login_auth", "cod_empresa_FK"]))
 
     empresa = df_empresa[df_empresa['cod_empresa'] == cod_empresa]
     if empresa.empty:
         raise HTTPException(status_code=404, detail="Empresa não encontrada")
+
+    empresa_nome = empresa['empresa_nome'].values[0]
 
     email_correto = empresa['empresa_email'].values[0]
     if empresa_email != email_correto:
@@ -51,7 +54,8 @@ async def login_empresa(cod_empresa: int, empresa_email: str, empresa_senha: int
         "mensagem": "Login realizado com sucesso!",
         "cod_empresa": int(cod_empresa),
         "cod_login": int(cod_login),
-        "empresa_email": empresa_email
+        "empresa_email": empresa_email,
+        "empresa_nome": empresa_nome
     }
 
 

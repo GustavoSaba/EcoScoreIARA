@@ -1,7 +1,12 @@
+from session import current_user
 import customtkinter as ctk
+import requests
 from PIL import Image, ImageTk
 from model.config_model.config import HOME_ICON, NOTIFY_ICON, GRAPH_ICON
-from api.config_api.config import EXCEL_PATH
+from model.model_loading.model_loading import show_loading_screen
+from model.model_inicio.model_inicio import iniciar_gui_inicio
+
+API_URL = "http://127.0.0.1:8000"
 
 def iniciar_gui_perfil():
     perfil_app = ctk.CTk()
@@ -9,6 +14,11 @@ def iniciar_gui_perfil():
     perfil_app.geometry("1093x626")
     perfil_app.resizable(False, False)
     perfil_app.config(bg="#FFFAFA")
+
+    def ir_inicio():
+        perfil_app.destroy()
+        show_loading_screen(iniciar_gui_inicio)
+            
 
     frame = ctk.CTkFrame(
         perfil_app,
@@ -30,7 +40,8 @@ def iniciar_gui_perfil():
     canvas.pack(fill='both', expand=True)
 
     def on_home_click(event=None):
-        print("Direciona para tela Inicial")
+        #print("Direciona para tela Inicial")
+        ir_inicio()
 
     def on_notify_click(event=None):
         print("Direciona para as notificações")
@@ -38,23 +49,43 @@ def iniciar_gui_perfil():
     def on_graph_click(event=None):
         print("Direciona para os gráficos")
 
-    pil_home_icon = Image.open(HOME_ICON).resize((51, 50))
-    home_icon = ImageTk.PhotoImage(pil_home_icon)
+    try:
 
-    home_btn = canvas.create_image(124/2, 82, image=home_icon)
-    canvas.tag_bind(home_btn, "<Button-1>", on_home_click)
+        pil_home_icon = Image.open(HOME_ICON).resize((51, 50))
+        home_icon = ImageTk.PhotoImage(pil_home_icon)
+        canvas.home_icon = home_icon
 
-    pil_notify_icon = Image.open(NOTIFY_ICON).resize((34, 50))
-    notify_icon = ImageTk.PhotoImage(pil_notify_icon)
+        home_btn = canvas.create_image(124/2, 82, image=home_icon)
+        canvas.tag_bind(home_btn, "<Button-1>", on_home_click)
+    except FileNotFoundError:
+        print(f"ERRO CRÍTICO: Arquivo de imagem não encontrado em: {HOME_ICON}")
+    except Exception as e:
+        print(f"ERRO CRÍTICO ao carregar a imagem home: {e}")
 
-    notify_btn = canvas.create_image(124/2, 199, image=notify_icon)
-    canvas.tag_bind(notify_btn, "<Button-1>", on_notify_click)
+    try:
+        pil_notify_icon = Image.open(NOTIFY_ICON).resize((34, 50))
+        notify_icon = ImageTk.PhotoImage(pil_notify_icon)
+        canvas.notify_icon = notify_icon
 
-    pil_graph_icon = Image.open(GRAPH_ICON).resize((34, 50))
-    graph_icon = ImageTk.PhotoImage(pil_graph_icon)
+        notify_btn = canvas.create_image(124/2, 199, image=notify_icon)
+        canvas.tag_bind(notify_btn, "<Button-1>", on_notify_click)
+    except FileNotFoundError:
+        print(f"ERRO CRÍTICO: Arquivo de imagem não encontrado em: {NOTIFY_ICON}")
+    except Exception as e:
+        print(f"ERRO CRÍTICO ao carregar a imagem de notificação: {e}")
 
-    graph_btn = canvas.create_image(124/2, 317, image=graph_icon)
-    canvas.tag_bind(graph_btn, "<Button-1>", on_graph_click)
+    try:
+
+        pil_graph_icon = Image.open(GRAPH_ICON).resize((34, 50))
+        graph_icon = ImageTk.PhotoImage(pil_graph_icon)
+        canvas.graph_icon = graph_icon
+
+        graph_btn = canvas.create_image(124/2, 317, image=graph_icon)
+        canvas.tag_bind(graph_btn, "<Button-1>", on_graph_click)
+    except FileNotFoundError:
+        print(f"ERRO CRÍTICO: Arquivo de imagem não encontrado em: {GRAPH_ICON}")
+    except Exception as e:
+        print(f"ERRO CRÍTICO ao carregar a imagem de gráfico: {e}")
 
     frame_principal = ctk.CTkFrame(
         perfil_app,
@@ -85,6 +116,8 @@ def iniciar_gui_perfil():
     )
     canvas_principal.pack(fill='both', expand=True)
 
+#   --BLOCO INFO
+
     bloco_info = ctk.CTkFrame(
         canvas_principal,
         width= 578,
@@ -92,6 +125,57 @@ def iniciar_gui_perfil():
         fg_color="#E0E0D4",
         corner_radius=10,
     )
+    bloco_info.pack_propagate(False)
+
+    nome_empresa = ctk.CTkLabel(
+        bloco_info,
+        #text=current_user.nome_empresa.upper(),
+        text="NOME DA EMPRESA",
+        font=("Inter", 24, "bold"),
+        text_color="#4E5D4D",
+        wraplength=500
+    )
+    nome_empresa.pack(pady=11, anchor="n")
+
+    cod_empresa = ctk.CTkLabel(
+        bloco_info,
+        #text=f"CÓDIGO DA EMPRESA: {current_user.cod_empresa}",
+        text="CÓDIGO DA EMPRESA:",
+        font=("Inter", 16, "bold"),
+        text_color="#52765A",
+        wraplength=500
+    )
+    cod_empresa.place(relx = 0.04, rely= 0.25)
+
+    cnpj_empresa = ctk.CTkLabel(
+        bloco_info,
+        #text=f"CNPJ: {current_user.cnpj_empresa}",
+        text="CNPJ DA EMPRESA:",
+        font=("Inter", 16, "bold"),
+        text_color="#52765A",
+        wraplength=500
+    )
+    cnpj_empresa.place(relx = 0.04, rely= 0.45)
+
+    email_empresa = ctk.CTkLabel(
+        bloco_info,
+        #text=f"EMAIL: {current_user.email_empresa}",
+        text="EMAIL DA EMPRESA:",
+        font=("Inter", 16, "bold"),
+        text_color="#52765A",
+        wraplength=500
+    )
+    email_empresa.place(relx = 0.04, rely= 0.65)
+
+    senha_empresa = ctk.CTkLabel(
+        bloco_info,
+        #text=f"SENHA: {current_user.senha_empresa}",
+        text="SENHA DA EMPRESA:",
+        font=("Inter", 16, "bold"),
+        text_color="#52765A",
+        wraplength=500
+    )
+    senha_empresa.place(relx = 0.04, rely= 0.85)
     
     canvas_principal.create_window(
         845/2,
@@ -99,12 +183,64 @@ def iniciar_gui_perfil():
         window=bloco_info
     )
 
-    canvas_principal.create_text(
-        845/2,
-        172,
-        text="",
-        fill="#4E5D4D"
+    bloco_score = ctk.CTkFrame(
+        canvas_principal,
+        width= 578,
+        height= 140,
+        fg_color="#E0E0D4",
+        corner_radius=10,
     )
+
+    bloco_score.pack_propagate(False)
+    
+#   --BLOCO SCORE
+
+    pont_empresa = ctk.CTkLabel(
+        bloco_score,
+        #text=current_user.nome_empresa.upper(),
+        text="SUA PONTUAÇÃO",
+        font=("Inter", 24, "bold"),
+        text_color="#4E5D4D",
+        wraplength=500
+    )
+    pont_empresa.place(relx = 0.04, rely= 0.10)
+
+    senha_empresa = ctk.CTkLabel(
+        bloco_info,
+        #text=f"SENHA: {current_user.senha_empresa}",
+        text="SENHA DA EMPRESA:",
+        font=("Inter", 16, "bold"),
+        text_color="#52765A",
+        wraplength=500
+    )
+    senha_empresa.place(relx = 0.04, rely= 0.85)
+
+    canvas_principal.create_window(
+        845/2,
+        356,
+        window=bloco_score
+    )
+
+#   --BLOCO GRAFICO
+
+    bloco_grafico_mes = ctk.CTkFrame(
+        canvas_principal,
+        width= 578,
+        height= 140,
+        fg_color="#E0E0D4",
+        corner_radius=10,
+    )
+    bloco_grafico_mes.pack_propagate(False)
+
+    canvas_principal.create_window(
+        845/2,
+        500,
+        window=bloco_grafico_mes
+    )
+
+
+
+    print(f"DEBUG: Estado do current_user ao abrir o perfil: {current_user.__dict__}")
 
 
 

@@ -1,1 +1,1 @@
-EXCEL_PATH = r"database\banco - Copia.xlsx"
+EXCEL_PATH = r"database\banco.xlsx"
