@@ -1,8 +1,12 @@
 import customtkinter as ctk
+from tkinter import messagebox
+import requests
+import traceback
 from PIL import Image, ImageTk
 import pywinstyles as pwstyles
 from model.config_model.config import BG_CADASTRO, LOGO_PATH, PROFILE, PASSWORD, EMAIL
 
+API_URL = "http://127.0.0.1:8000"
 
 def iniciar_gui_cadastro():
     cadastro_app = ctk.CTk()
@@ -20,7 +24,36 @@ def iniciar_gui_cadastro():
     
     # Função Cadastro (tem que terminar)
     def cadastrar():
-        pass
+        nome = entry_nome.get()
+        cnpj = entry_cnpj.get()
+        email = entry_email.get()
+        senha = entry_senha.get()
+
+        if not all([nome, cnpj, email, senha]):
+            messagebox.showwarning("Atenção", "Por favor, preencha todos os campos.")
+            return
+        
+        payload = {
+                "empresa_nome": nome,
+                "empresa_cnpj": cnpj,
+                "empresa_email": email,
+                "empresa_senha": senha
+            }
+        
+        try:
+            response = requests.put(f"{API_URL}/company/registrar", json=payload)
+
+            if response.status_code == 201:
+                #from model.model_loading.model_loading import show_loading_screen
+                #show_loading_screen(colocar_gui_aqui_sem_gui)
+                messagebox.showinfo("Sucesso", f"Cadastro realizado! \n Seja bem-vindo! \n {payload['empresa_nome']}")
+            else:
+                erro = response.json().get("detail", "Erro desconhecido.")
+                messagebox.showerror("Erro", erro)
+        except Exception as e:
+            messagebox.showerror("Erro", f"Falha ao conectar com o servidor: {traceback.print_exc()}")
+
+
 
     # Frame à esquerda
     frame = ctk.CTkFrame(
@@ -130,6 +163,7 @@ def iniciar_gui_cadastro():
         fg_color='#F3EBEB',
         placeholder_text="Senha", 
         placeholder_text_color='#74866E',
+        show='*',
         font=('Poppins', 20),
         text_color="#747C71",
         justify="center"

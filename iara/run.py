@@ -3,6 +3,7 @@ import time
 import requests
 import uvicorn
 from model.model_login.model_login import iniciar_gui, iniciar_gui_cadastro
+from model.model_perfil.model_perfil import iniciar_gui_perfil
 from model.model_loading.model_loading import show_loading_screen
 
 API_URL = "http://127.0.0.1:8000"
@@ -37,6 +38,6 @@ if __name__ == "__main__":
     if verificar_api():
         print("\033[94m[GUI] Abrindo interface do EcoScore...\033[0m")
         #show_loading_screen(iniciar_gui)
-        show_loading_screen(iniciar_gui_cadastro)
+        show_loading_screen(iniciar_gui_perfil)
     else:
         print("\033[91m[ERRO] Não foi possível iniciar a interface — API fora do ar.\033[0m")

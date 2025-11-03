@@ -31,7 +31,7 @@ async def get_company(cod_empresa: int):
     return empresa_teste
 
 
-@company_router.put("/registrar")
+@company_router.put("/registrar", status_code=201)
 async def put_company(nova_empresa: Empresa):
     df_database = pd.read_excel(EXCEL_PATH, sheet_name=None)
     df_empresa = df_database["empresa"]
