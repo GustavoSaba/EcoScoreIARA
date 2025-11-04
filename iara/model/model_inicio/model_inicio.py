@@ -58,12 +58,12 @@ def iniciar_gui_inicio():
                 if data.get('status') == 0:
                     canvas.itemconfig(scores_img, image=canvas.score1_img)
                     canvas.itemconfig(scores_diario_img, image=canvas.score_diario_ruim_img)
-                    canvas.itemconfig(porc_score, fill="#FFCD87")
+                    canvas.itemconfig(porc_score, fill="#DE494B")
                     print("Trocando a imagem para status 0...")
                 elif data.get('status') == 1:
                     canvas.itemconfig(scores_img, image=canvas.score2_img)
                     canvas.itemconfig(scores_diario_img, image=canvas.score_diario_baixa_img)
-                    canvas.itemconfig(porc_score, fill="#ADF06A")
+                    canvas.itemconfig(porc_score, fill="#EE8667")
                     print("Trocando a imagem para status 1...")
                 elif data.get('status') == 2:
                     canvas.itemconfig(scores_img, image=canvas.score3_img)
@@ -73,12 +73,12 @@ def iniciar_gui_inicio():
                 elif data.get('status') == 3:
                     canvas.itemconfig(scores_img, image=canvas.score4_img)
                     canvas.itemconfig(scores_diario_img, image=canvas.score_diario_bom_img)
-                    porc_score.configure(text_color="#EE8667")
+                    porc_score.configure(text_color="#ADF06A")
                     print("Trocando a imagem para status 3...")
                 elif data.get('status') == 4:
                     canvas.itemconfig(scores_img, image=canvas.score5_img)
                     canvas.itemconfig(scores_diario_img, image=canvas.score_diario_otima_img)
-                    canvas.itemconfig(porc_score, fill="#DE494B")
+                    canvas.itemconfig(porc_score, fill="#FFCD87")
                     print("Trocando a imagem para status 4...")
                 else:
                     canvas.itemconfig(scores_img, image=canvas.score3_img)
@@ -93,6 +93,11 @@ def iniciar_gui_inicio():
             print("Erro de conexão: Não foi possível conectar à API.")
         except Exception as e:
             print(f"Ocorreu um erro inesperado: {e}")
+
+    def ir_perguntas():
+        from model.model_perguntas.model_perguntas import iniciar_gui_perguntas
+        from model.model_loading.model_loading import show_loading_screen
+        show_loading_screen(iniciar_gui_perguntas)
 
     frameEsq = ctk.CTkFrame(
         inicio_app,
@@ -187,7 +192,7 @@ def iniciar_gui_inicio():
         text="PERGUNTAS",
         font=("Inter", 24, "bold"),
         text_color="#FFFAFA",
-        #command=
+        command=ir_perguntas
     )
 
     canvas.create_window(

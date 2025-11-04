@@ -54,7 +54,7 @@ def iniciar_gui_perfil():
 
         data_agora = datetime.datetime.now()
 
-        data_formatada = data_agora.strftime('%B, %y')
+        data_formatada = data_agora.strftime('%B, %Y')
 
         #data_formatada = data_objeto.strftime('%B, %d')
 
