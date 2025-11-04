@@ -2,8 +2,7 @@ import customtkinter as ctk
 import requests
 from session import current_user
 from PIL import Image, ImageTk
-from model.config_model.config import NOTIFY_ICON, PROFILE_ICON
-from model.config_model.config import API_URL
+from model.config_model.config import API_URL, NOTIFY_ICON, PROFILE_ICON, AVALIACAO_BAIXA, AVALIACAO_BOA, AVALIACAO_OK, AVALIACAO_OTIMA, AVALIACAO_RUIM, SCORE_BAIXA, SCORE_BOM, SCORE_OK, SCORE_OTIMA, SCORE_RUIM, LINHA
 
 def iniciar_gui_inicio():
     inicio_app = ctk.CTk()
@@ -14,14 +13,86 @@ def iniciar_gui_inicio():
     ctk.set_appearance_mode("light")
 
     def preencher_dados_inicio():
-        response = requests.get(
-            f"{API_URL}/company/score/{current_user.cod_empresa}"
-        )
+        try:
+            response = requests.get(f"{API_URL}/company/score/{current_user.cod_empresa}")
 
-        if response.status_code == 200:
-            data = response.json()
+            if response.status_code == 200:
+                data = response.json()
 
-            maior_score_btn.configure(text=f'Score Total\n do Mês: {data['score_mensal']}', wraplength=224,)
+                print(f"DEBUG: Dados completos da API: {data}")
+
+                maior_score_btn.configure(text=f"Score Total\n do Mês: {data.get('score_mensal', 'N/A')}")
+
+                canvas.itemconfig(porc_score, text=f"{str(data.get('porcentagem_obtida', 'N/A'))}%")
+
+                score1_img = ImageTk.PhotoImage(pil_score1_img)
+                canvas.score1_img = score1_img
+
+                score_diario_ruim_img = ImageTk.PhotoImage(pil_scorediar_ruim)
+                canvas.score_diario_ruim_img = score_diario_ruim_img
+
+                score2_img = ImageTk.PhotoImage(pil_score2_img)
+                canvas.score2_img = score2_img
+
+                score_diario_baixa_img = ImageTk.PhotoImage(pil_scorediar_baixa)
+                canvas.score_diario_baixa_img = score_diario_baixa_img
+
+                score3_img = ImageTk.PhotoImage(pil_score3_img)
+                canvas.score3_img = score3_img
+
+                score_diario_ok_img = ImageTk.PhotoImage(pil_scorediar_ok)
+                canvas.score_diario_ok_img = score_diario_ok_img
+
+                score4_img = ImageTk.PhotoImage(pil_score4_img)
+                canvas.score4_img = score4_img
+
+                score_diario_bom_img = ImageTk.PhotoImage(pil_scorediar_bom)
+                canvas.score_diario_bom_img = score_diario_bom_img
+
+                score5_img = ImageTk.PhotoImage(pil_score5_img)
+                canvas.score5_img = score5_img
+
+                score_diario_otima_img = ImageTk.PhotoImage(pil_scorediar_otima)
+                canvas.score_diario_otima_img = score_diario_otima_img
+
+                if data.get('status') == 0:
+                    canvas.itemconfig(scores_img, image=canvas.score1_img)
+                    canvas.itemconfig(scores_diario_img, image=canvas.score_diario_ruim_img)
+                    canvas.itemconfig(porc_score, fill="#FFCD87")
+                    print("Trocando a imagem para status 0...")
+                elif data.get('status') == 1:
+                    canvas.itemconfig(scores_img, image=canvas.score2_img)
+                    canvas.itemconfig(scores_diario_img, image=canvas.score_diario_baixa_img)
+                    canvas.itemconfig(porc_score, fill="#ADF06A")
+                    print("Trocando a imagem para status 1...")
+                elif data.get('status') == 2:
+                    canvas.itemconfig(scores_img, image=canvas.score3_img)
+                    canvas.itemconfig(scores_diario_img, image=canvas.score_diario_ok_img)
+                    canvas.itemconfig(porc_score, fill="#DEE85B")
+                    print("Trocando a imagem para status 2...")
+                elif data.get('status') == 3:
+                    canvas.itemconfig(scores_img, image=canvas.score4_img)
+                    canvas.itemconfig(scores_diario_img, image=canvas.score_diario_bom_img)
+                    porc_score.configure(text_color="#EE8667")
+                    print("Trocando a imagem para status 3...")
+                elif data.get('status') == 4:
+                    canvas.itemconfig(scores_img, image=canvas.score5_img)
+                    canvas.itemconfig(scores_diario_img, image=canvas.score_diario_otima_img)
+                    canvas.itemconfig(porc_score, fill="#DE494B")
+                    print("Trocando a imagem para status 4...")
+                else:
+                    canvas.itemconfig(scores_img, image=canvas.score3_img)
+                    canvas.itemconfig(scores_diario_img, image=canvas.score_diario_ok_img)
+                    canvas.itemconfig(porc_score, fill="#DEE85B")
+                    print("Status desconhecido, nenhuma imagem para exibir.")
+
+            else:
+                print(f"Erro ao buscar dados da API: {response.status_code} - {response.text}")
+
+        except requests.exceptions.ConnectionError:
+            print("Erro de conexão: Não foi possível conectar à API.")
+        except Exception as e:
+            print(f"Ocorreu um erro inesperado: {e}")
 
     frameEsq = ctk.CTkFrame(
         inicio_app,
@@ -92,7 +163,7 @@ def iniciar_gui_inicio():
     frame = ctk.CTkFrame(
         inicio_app,
         width=850,
-        height=513,
+        height=625,
         corner_radius=0,
         fg_color='transparent'
     )
@@ -112,7 +183,7 @@ def iniciar_gui_inicio():
         height=253,
         corner_radius=30,
         border_spacing=5,
-        fg_color="#4E5D4D",
+        fg_color="#7EB87E",
         text="PERGUNTAS",
         font=("Inter", 24, "bold"),
         text_color="#FFFAFA",
@@ -121,7 +192,7 @@ def iniciar_gui_inicio():
 
     canvas.create_window(
         138,
-        149,
+        181.5,
         anchor='center',
         window=perguntas_btn
     )
@@ -141,7 +212,7 @@ def iniciar_gui_inicio():
 
     canvas.create_window(
         423,
-        149,
+        181.5,
         anchor='center',
         window=maior_score_btn
     )
@@ -161,10 +232,49 @@ def iniciar_gui_inicio():
 
     canvas.create_window(
         708,
-        149,
+        181.5,
         anchor='center',
         window=grafico_btn
     )
+
+    try:
+
+        pil_linha = Image.open(LINHA)
+        linha_img = ImageTk.PhotoImage(pil_linha)
+        canvas.linha = linha_img
+
+        canvas.create_image(850/2, 468, image=linha_img)
+        
+    except FileNotFoundError:
+        print(f"ERRO CRÍTICO: Arquivo de imagem não encontrado em: {LINHA}")
+    except Exception as e:
+        print(f"ERRO CRÍTICO ao carregar a imagem home: {e}")
+
+    pil_score1_img = Image.open(AVALIACAO_RUIM).resize((850, 124))
+    pil_score2_img = Image.open(AVALIACAO_BAIXA).resize((850, 124))
+    pil_score3_img = Image.open(AVALIACAO_OK).resize((850, 124))
+    pil_score4_img = Image.open(AVALIACAO_BOA).resize((850, 124))
+    pil_score5_img = Image.open(AVALIACAO_OTIMA).resize((850, 124))
+
+    scores_img = canvas.create_image(850/2, 387.5, image='')
+
+    pil_scorediar_ruim = Image.open(SCORE_RUIM).resize((849, 81))
+    pil_scorediar_baixa = Image.open(SCORE_BAIXA).resize((849, 81))
+    pil_scorediar_ok = Image.open(SCORE_OK).resize((849, 81))
+    pil_scorediar_bom = Image.open(SCORE_BOM).resize((849, 81))
+    pil_scorediar_otima = Image.open(SCORE_OTIMA).resize((849, 81))
+
+    scores_diario_img = canvas.create_image(850/2, 528, image='')
+
+
+    porc_score = canvas.create_text(
+        700,
+        528,
+        text='',
+        font=('Poppins', 48),
+        fill="#DEE85B"
+    )
+    
 
     inicio_app.after(50, preencher_dados_inicio)
     inicio_app.mainloop()
