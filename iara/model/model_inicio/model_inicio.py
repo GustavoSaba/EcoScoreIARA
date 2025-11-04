@@ -57,70 +57,35 @@ def iniciar_gui_inicio():
                 canvas.score_diario_otima_img = score_diario_otima_img
 
                 if data.get('status') == 0:
-                    #canvas.itemconfig(scores_img, image=canvas.score1_img)
+                    canvas.itemconfig(scores_img, image=canvas.score1_img)
                     canvas.itemconfig(scores_diario_img, image=canvas.score_diario_ruim_img)
                     canvas.itemconfig(porc_score, fill="#DE494B")
                     print("Trocando a imagem para status 0...")
                 elif data.get('status') == 1:
-                    #canvas.itemconfig(scores_img, image=canvas.score2_img)
+                    canvas.itemconfig(scores_img, image=canvas.score2_img)
                     canvas.itemconfig(scores_diario_img, image=canvas.score_diario_baixa_img)
                     canvas.itemconfig(porc_score, fill="#EE8667")
                     print("Trocando a imagem para status 1...")
                 elif data.get('status') == 2:
-                    #canvas.itemconfig(scores_img, image=canvas.score3_img)
+                    canvas.itemconfig(scores_img, image=canvas.score3_img)
                     canvas.itemconfig(scores_diario_img, image=canvas.score_diario_ok_img)
                     canvas.itemconfig(porc_score, fill="#DEE85B")
                     print("Trocando a imagem para status 2...")
                 elif data.get('status') == 3:
-                    #canvas.itemconfig(scores_img, image=canvas.score4_img)
+                    canvas.itemconfig(scores_img, image=canvas.score4_img)
                     canvas.itemconfig(scores_diario_img, image=canvas.score_diario_bom_img)
                     porc_score.configure(text_color="#ADF06A")
                     print("Trocando a imagem para status 3...")
                 elif data.get('status') == 4:
-                    #canvas.itemconfig(scores_img, image=canvas.score5_img)
+                    canvas.itemconfig(scores_img, image=canvas.score5_img)
                     canvas.itemconfig(scores_diario_img, image=canvas.score_diario_otima_img)
                     canvas.itemconfig(porc_score, fill="#FFCD87")
                     print("Trocando a imagem para status 4...")
                 else:
-                    #canvas.itemconfig(scores_img, image=canvas.score3_img)
+                    canvas.itemconfig(scores_img, image=canvas.score3_img)
                     canvas.itemconfig(scores_diario_img, image=canvas.score_diario_ok_img)
                     canvas.itemconfig(porc_score, fill="#DEE85B")
                     print("Status desconhecido, nenhuma imagem para exibir.")
-                
-#               SCORE MEDIO -> SCORE DO MEIO
-                if data.get('score_medio_dia') <= 0.5:
-                    canvas.itemconfig(scores_img, image=canvas.score1_img)
-                    #canvas.itemconfig(scores_diario_img, image=canvas.score_diario_ruim_img)
-                    #canvas.itemconfig(porc_score, fill="#DE494B")
-                    print("Trocando a imagem para status 0...")
-                elif data.get('score_medio_dia') <= 1:
-                    canvas.itemconfig(scores_img, image=canvas.score2_img)
-                    #canvas.itemconfig(scores_diario_img, image=canvas.score_diario_baixa_img)
-                    #canvas.itemconfig(porc_score, fill="#EE8667")
-                    print("Trocando a imagem para status 1...")
-                elif data.get('score_medio_dia') <= 2:
-                    canvas.itemconfig(scores_img, image=canvas.score3_img)
-                    #canvas.itemconfig(scores_diario_img, image=canvas.score_diario_ok_img)
-                    #canvas.itemconfig(porc_score, fill="#DEE85B")
-                    print("Trocando a imagem para status 2...")
-                elif data.get('score_medio_dia') <= 3:
-                    canvas.itemconfig(scores_img, image=canvas.score4_img)
-                    #canvas.itemconfig(scores_diario_img, image=canvas.score_diario_bom_img)
-                    #porc_score.configure(text_color="#ADF06A")
-                    print("Trocando a imagem para status 3...")
-                elif data.get('score_medio_dia') <= 4:
-                    canvas.itemconfig(scores_img, image=canvas.score5_img)
-                    #canvas.itemconfig(scores_diario_img, image=canvas.score_diario_otima_img)
-                    #canvas.itemconfig(porc_score, fill="#FFCD87")
-                    print("Trocando a imagem para status 4...")
-                else:
-                    canvas.itemconfig(scores_img, image=canvas.score3_img)
-                    #canvas.itemconfig(scores_diario_img, image=canvas.score_diario_ok_img)
-                    #canvas.itemconfig(porc_score, fill="#DEE85B")
-                    print("Status desconhecido, nenhuma imagem para exibir.")
-
-            else:
-                print(f"Erro ao buscar dados da API: {response.status_code} - {response.text}")
 
         except requests.exceptions.ConnectionError:
             print("Erro de conexão: Não foi possível conectar à API.")
