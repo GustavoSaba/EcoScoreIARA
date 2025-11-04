@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     if verificar_api():
         print("\033[94m[GUI] Abrindo interface do EcoScore...\033[0m")
-        #show_loading_screen(iniciar_gui)
-        show_loading_screen(iniciar_gui_inicio)
+        show_loading_screen(iniciar_gui)
+        #show_loading_screen(iniciar_gui_inicio)
     else:
         print("\033[91m[ERRO] Não foi possível iniciar a interface — API fora do ar.\033[0m")

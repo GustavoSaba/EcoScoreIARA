@@ -100,3 +100,80 @@ async def deletar_empresa(cod_empresa: int):
                     df_sheet.to_excel(writer, sheet_name=sheet_name, index=False)
 
         return {"mensagem": "Empresa deletada com sucesso!", "cod_empresa": cod_empresa}
+
+@company_router.get("/score/{cod_empresa}")
+
+async def ler_score(cod_empresa: int):
+    try:
+        df_database = pd.read_excel(EXCEL_PATH, sheet_name=None)
+        if "score" not in df_database:
+            raise HTTPException(status_code=404, detail="Tabela 'score' não encontrada.")
+
+
+        df_score = df_database["score"]
+        df_score["score_data"] = pd.to_datetime(df_score["score_data"], errors="coerce")
+
+
+        empresa_score = df_score[df_score["cod_empresa_FK"] == cod_empresa]
+        if empresa_score.empty:
+            raise HTTPException(status_code=404, detail="Score da empresa não encontrado.")
+
+
+        ultimo_registro = empresa_score.sort_values(by="score_data", ascending=False).iloc[0]
+        ultimo_score_total = int(ultimo_registro["score_total"])
+        ultimo_score_data = ultimo_registro["score_data"]
+
+
+        mes = ultimo_score_data.month
+        ano = ultimo_score_data.year
+
+
+        score_mensal = empresa_score[
+            (empresa_score["score_data"].dt.month == mes) &
+            (empresa_score["score_data"].dt.year == ano)
+        ]["score_total"].sum()
+
+
+        dias_uteis = 22
+        score_medio_dia = score_mensal / dias_uteis if dias_uteis > 0 else 0
+
+
+        if score_medio_dia < 0.5:
+            status = 0
+            status_texto = "Ruim"
+        elif score_medio_dia < 1:
+            status = 1
+            status_texto = "Baixa"
+        elif score_medio_dia < 2:
+            status = 2
+            status_texto = "Ok"
+        elif score_medio_dia < 3:
+            status = 3
+            status_texto = "Boa"
+        else:
+            status = 4
+            status_texto = "Ótima"
+
+
+        SCORE_MAXIMO = 170
+        porcentagem_obtida = (ultimo_score_total / SCORE_MAXIMO) * 100
+
+
+        return {
+            "cod_empresa_FK": cod_empresa,
+            "score_total": ultimo_score_total,
+            "score_data": str(ultimo_score_data),
+            "mes_referencia": f"{mes:02d}/{ano}",
+            "score_mensal": int(score_mensal),
+            "dias_uteis": dias_uteis,
+            "score_medio_dia": round(score_medio_dia, 2),
+            "status": status,
+            "status_texto": status_texto,
+            "porcentagem_obtida": round(porcentagem_obtida),
+        }
+
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao ler o score: {str(e)}")

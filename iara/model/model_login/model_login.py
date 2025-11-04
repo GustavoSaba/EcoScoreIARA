@@ -5,10 +5,10 @@ import pywinstyles as pwstyles
 from tkinter import messagebox
 from model.config_model.config import API_URL, BG_LOGIN, PROFILE, PASSWORD, EMAIL
 from model.model_cadastro.model_cadastro import iniciar_gui_cadastro
-from model.model_perfil.model_perfil import iniciar_gui_perfil
+from model.model_inicio.model_inicio import iniciar_gui_inicio
 from model.model_loading.model_loading import show_loading_screen
+#from model.model_perfil.model_perfil import iniciar_gui_perfil
 from PIL import Image
-
 def iniciar_gui():
     login_app = ctk.CTk()
     login_app.title("EcoScore - Login")
@@ -28,7 +28,7 @@ def iniciar_gui():
 
         try:
             response = requests.post(
-                API_URL,
+                f"{API_URL}/login",
                 params={
                     "cod_empresa": cod_empresa,
                     "empresa_email": email,
@@ -45,7 +45,7 @@ def iniciar_gui():
                     f"Login realizado!\nEmpresa: {data['empresa_email']}"
                 )
                 login_app.destroy()
-                show_loading_screen(iniciar_gui_perfil)
+                show_loading_screen(iniciar_gui_inicio)
             else:
                 erro = response.json().get("detail", "Erro desconhecido.")
                 messagebox.showerror("Erro", erro)
@@ -202,4 +202,6 @@ def iniciar_gui():
     pwstyles.set_opacity(text_left, color='#000001')
     #pwstyles.set_opacity(btn_cadastro, 1, '#000001')
 
+
     login_app.mainloop()
+

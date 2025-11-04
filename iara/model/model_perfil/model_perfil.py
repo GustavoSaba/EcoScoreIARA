@@ -1,4 +1,6 @@
 from session import current_user
+import datetime
+import locale
 import customtkinter as ctk
 import requests
 from PIL import Image, ImageTk
@@ -15,10 +17,54 @@ def iniciar_gui_perfil():
     perfil_app.resizable(False, False)
     perfil_app.config(bg="#FFFAFA")
 
+    def preencher_dados():
+        response = requests.get(
+            f"{API_URL}/company/{current_user.cod_empresa}",
+        )
+        if response.status_code == 200:
+            data = response.json()
+            empresa = data[0]
+            print(empresa)
+            nome_empresa.configure(text=empresa["empresa_nome"])
+            cod_empresa.configure(text=f"CÓDIGO DA EMPRESA: {empresa['cod_empresa']}")
+            cnpj_empresa.configure(text=f"CNPJ: {empresa['empresa_cnpj']}")
+            email_empresa.configure(text=f"E-MAIL: {empresa['empresa_email']}")
+            senha_empresa.configure(text=f"SENHA: {empresa['empresa_senha']}")
+            
+        response_score = requests.get(
+            f"{API_URL}/company/score/{current_user.cod_empresa}",
+        )
+
+        if response_score.status_code == 200:
+            data_score = response_score.json()
+
+            pontuacao_diaria.configure(text=f"Pontuação Diária: {data_score['score_total']}")
+
+            mensal_pontuacao.configure(text=f"Pontuação Total do Mês: {data_score['score_mensal']}")
+            avaliacao.configure(text=f"Total de pontos: {data_score['status_texto']}")
+            #perguntas_respondidas.configure(text=str(empresa_score['score_total']))
+        
+        try:
+            locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+        except locale.Error:
+            try:
+                locale.setlocale(locale.LC_TIME, 'Portuguese_Brazil.1252')
+            except locale.Error:
+                print("Aviso: Locale para português não encontrado. O mês será exibido em inglês.")
+
+        data_agora = datetime.datetime.now()
+
+        data_formatada = data_agora.strftime('%B, %y')
+
+        #data_formatada = data_objeto.strftime('%B, %d')
+
+        data_grafico.configure(text=f"{data_formatada.capitalize()}")
+        print(data_formatada)
+
     def ir_inicio():
         perfil_app.destroy()
         show_loading_screen(iniciar_gui_inicio)
-            
+    
 
     frame = ctk.CTkFrame(
         perfil_app,
@@ -96,16 +142,6 @@ def iniciar_gui_perfil():
     )
     frame_principal.pack(side="left")
     frame_principal.pack_propagate(False)
-
-    '''frame_principal_cima = ctk.CTkFrame(
-        frame_principal,
-        width=579, 
-        height=224, 
-        corner_radius=0,
-        fg_color="#E0E0D4",
-        bg_color="#FFFAFA"
-    )
-    frame_principal_cima.place(relx = 0.5, rely = 0.5, anchor='n')'''
 
     canvas_principal = ctk.CTkCanvas(
         frame_principal,
@@ -197,23 +233,39 @@ def iniciar_gui_perfil():
 
     pont_empresa = ctk.CTkLabel(
         bloco_score,
-        #text=current_user.nome_empresa.upper(),
-        text="SUA PONTUAÇÃO",
+        text="Sua Pontuação",
         font=("Inter", 24, "bold"),
         text_color="#4E5D4D",
         wraplength=500
     )
     pont_empresa.place(relx = 0.04, rely= 0.10)
 
-    senha_empresa = ctk.CTkLabel(
-        bloco_info,
-        #text=f"SENHA: {current_user.senha_empresa}",
-        text="SENHA DA EMPRESA:",
+    pontuacao_diaria = ctk.CTkLabel(
+        bloco_score,
+        text="Pontuação Diária: ",
         font=("Inter", 16, "bold"),
         text_color="#52765A",
         wraplength=500
     )
-    senha_empresa.place(relx = 0.04, rely= 0.85)
+    pontuacao_diaria.place(relx = 0.04, rely= 0.35)
+
+    mensal_pontuacao = ctk.CTkLabel(
+        bloco_score,
+        text="Pontuação Total do Mês:",
+        font=("Inter", 16, "bold"),
+        text_color="#52765A",
+        wraplength=500
+    )
+    mensal_pontuacao.place(relx = 0.04, rely= 0.55)
+
+    avaliacao = ctk.CTkLabel(
+        bloco_score,
+        text="Avaliação:",
+        font=("Inter", 16, "bold"),
+        text_color="#52765A",
+        wraplength=500
+    )
+    avaliacao.place(relx = 0.04, rely= 0.75)
 
     canvas_principal.create_window(
         845/2,
@@ -232,6 +284,15 @@ def iniciar_gui_perfil():
     )
     bloco_grafico_mes.pack_propagate(False)
 
+    data_grafico = ctk.CTkLabel(
+        bloco_grafico_mes,
+        text="Mês, 00",
+        font=("Inter", 24, "bold"),
+        text_color="#4E5D4D",
+        wraplength=500
+    )
+    data_grafico.place(relx = 0.04, rely= 0.10)
+
     canvas_principal.create_window(
         845/2,
         500,
@@ -243,5 +304,5 @@ def iniciar_gui_perfil():
     print(f"DEBUG: Estado do current_user ao abrir o perfil: {current_user.__dict__}")
 
 
-
+    perfil_app.after(100, preencher_dados)
     perfil_app.mainloop()

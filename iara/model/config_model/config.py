@@ -1,4 +1,4 @@
-API_URL = "http://127.0.0.1:8000/login"
+API_URL = "http://127.0.0.1:8000"
 LOGO_PATH = r"model\src\Logo3.png"
 BG_LOGIN = r"model\src\LoginFundoVerde.png"
 PROFILE = r"model\src\VectorProfile.png"

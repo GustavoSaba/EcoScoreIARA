@@ -1,6 +1,9 @@
 import customtkinter as ctk
+import requests
+from session import current_user
 from PIL import Image, ImageTk
 from model.config_model.config import NOTIFY_ICON, PROFILE_ICON
+from model.config_model.config import API_URL
 
 def iniciar_gui_inicio():
     inicio_app = ctk.CTk()
@@ -9,6 +12,16 @@ def iniciar_gui_inicio():
     inicio_app.resizable(False, False)
     inicio_app.config(bg="#FFFAFA")
     ctk.set_appearance_mode("light")
+
+    def preencher_dados_inicio():
+        response = requests.get(
+            f"{API_URL}/company/score/{current_user.cod_empresa}"
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+
+            maior_score_btn.configure(text=f'Score Total\n do Mês: {data['score_mensal']}', wraplength=224,)
 
     frameEsq = ctk.CTkFrame(
         inicio_app,
@@ -75,5 +88,83 @@ def iniciar_gui_inicio():
         print(f"ERRO CRÍTICO: Arquivo de imagem não encontrado em: {NOTIFY_ICON}")
     except Exception as e:
         print(f"ERRO CRÍTICO ao carregar a imagem de notificação: {e}")
+    
+    frame = ctk.CTkFrame(
+        inicio_app,
+        width=850,
+        height=513,
+        corner_radius=0,
+        fg_color='transparent'
+    )
+    frame.pack()
+    frame.pack_propagate(False)
 
+    canvas = ctk.CTkCanvas(
+        frame,
+        highlightthickness=0,
+        bg="#FFFAFA"
+    )
+    canvas.pack(fill='both', expand=True)
+
+    perguntas_btn = ctk.CTkButton(
+        canvas,
+        width=280,
+        height=253,
+        corner_radius=30,
+        border_spacing=5,
+        fg_color="#4E5D4D",
+        text="PERGUNTAS",
+        font=("Inter", 24, "bold"),
+        text_color="#FFFAFA",
+        #command=
+    )
+
+    canvas.create_window(
+        138,
+        149,
+        anchor='center',
+        window=perguntas_btn
+    )
+
+    maior_score_btn = ctk.CTkButton(
+        canvas,
+        width=280,
+        height=253,
+        corner_radius=30,
+        border_spacing=5,
+        fg_color="#4E5D4D",
+        text="SEU MAIOR SCORE",
+        font=("Inter", 24, "bold"),
+        text_color="#FFFAFA",
+        #command=
+    )
+
+    canvas.create_window(
+        423,
+        149,
+        anchor='center',
+        window=maior_score_btn
+    )
+
+    grafico_btn = ctk.CTkButton(
+        canvas,
+        width=280,
+        height=253,
+        corner_radius=30,
+        border_spacing=5,
+        fg_color="#4E5D4D",
+        text="MEU GRÁFICO",
+        font=("Inter", 24, "bold"),
+        text_color="#FFFAFA",
+        #command=
+    )
+
+    canvas.create_window(
+        708,
+        149,
+        anchor='center',
+        window=grafico_btn
+    )
+
+    inicio_app.after(50, preencher_dados_inicio)
     inicio_app.mainloop()
