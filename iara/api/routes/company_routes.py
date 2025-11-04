@@ -136,18 +136,19 @@ async def ler_score(cod_empresa: int):
 
         dias_uteis = 22
         score_medio_dia = score_mensal / dias_uteis if dias_uteis > 0 else 0
+        #score_medio_hoje = (ultimo_score_total * 100) / 170
 
 
-        if score_medio_dia < 0.5:
+        if ultimo_score_total <= 34:
             status = 0
             status_texto = "Ruim"
-        elif score_medio_dia < 1:
+        elif ultimo_score_total <= 68:
             status = 1
             status_texto = "Baixa"
-        elif score_medio_dia < 2:
+        elif ultimo_score_total <= 102:
             status = 2
             status_texto = "Ok"
-        elif score_medio_dia < 3:
+        elif ultimo_score_total <= 136:
             status = 3
             status_texto = "Boa"
         else:
