@@ -26,7 +26,7 @@ def iniciar_gui_perfil():
             empresa = data[0]
             print(empresa)
             nome_empresa.configure(text=empresa["empresa_nome"])
-            cod_empresa.configure(text=f"CÓDIGO DA EMPRESA: {empresa['cod_empresa']}")
+            cod_empresa.configure(text=f"CÓDIGO DE LOGIN DA EMPRESA: {empresa['cod_empresa']}")
             cnpj_empresa.configure(text=f"CNPJ: {empresa['empresa_cnpj']}")
             email_empresa.configure(text=f"E-MAIL: {empresa['empresa_email']}")
             senha_empresa.configure(text=f"SENHA: {empresa['empresa_senha']}")
@@ -41,7 +41,7 @@ def iniciar_gui_perfil():
             pontuacao_diaria.configure(text=f"Pontuação Diária: {data_score['score_total']}")
 
             mensal_pontuacao.configure(text=f"Pontuação Total do Mês: {data_score['score_mensal']}")
-            avaliacao.configure(text=f"Total de pontos: {data_score['status_texto']}")
+            avaliacao.configure(text=f"Avaliação EcoScore da Empresa: {data_score['status_texto']}")
             #perguntas_respondidas.configure(text=str(empresa_score['score_total']))
         
         try:

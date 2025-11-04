@@ -20,6 +20,7 @@ def iniciar_gui_cadastro():
         cadastro_app.destroy()
         from model.model_loading.model_loading import show_loading_screen
         from model.model_login.model_login import iniciar_gui
+        cadastro_app.destroy()
         show_loading_screen(iniciar_gui)
     
     # Função Cadastro (tem que terminar)
@@ -44,9 +45,11 @@ def iniciar_gui_cadastro():
             response = requests.put(f"{API_URL}/company/registrar", json=payload)
 
             if response.status_code == 201:
-                #from model.model_loading.model_loading import show_loading_screen
-                #show_loading_screen(colocar_gui_aqui_sem_gui)
+                from model.model_loading.model_loading import show_loading_screen
+                from model.model_login.model_login import iniciar_gui
                 messagebox.showinfo("Sucesso", f"Cadastro realizado! \n Seja bem-vindo! \n {payload['empresa_nome']}")
+                cadastro_app.destroy()
+                show_loading_screen(iniciar_gui)
             else:
                 erro = response.json().get("detail", "Erro desconhecido.")
                 messagebox.showerror("Erro", erro)

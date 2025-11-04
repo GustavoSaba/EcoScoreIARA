@@ -1,8 +1,9 @@
 import customtkinter as ctk
+from tkinter import messagebox
 import requests
 from session import current_user
 from PIL import Image, ImageTk
-from model.config_model.config import API_URL, NOTIFY_ICON, PROFILE_ICON, AVALIACAO_BAIXA, AVALIACAO_BOA, AVALIACAO_OK, AVALIACAO_OTIMA, AVALIACAO_RUIM, SCORE_BAIXA, SCORE_BOM, SCORE_OK, SCORE_OTIMA, SCORE_RUIM, LINHA
+from model.config_model.config import API_URL, NOTIFY_ICON, PROFILE_ICON, AVALIACAO_BAIXA, AVALIACAO_BOA, AVALIACAO_OK, AVALIACAO_OTIMA, AVALIACAO_RUIM, SCORE_BAIXA, SCORE_BOM, SCORE_OK, SCORE_OTIMA, SCORE_RUIM, LINHA, LOGOUT_ICON, AVALIACAO_NULA, SCORE_NULO
 
 def iniciar_gui_inicio():
     inicio_app = ctk.CTk()
@@ -161,9 +162,42 @@ def iniciar_gui_inicio():
         profile_btn = canvasDir.create_image(124/2, 83, image=profile_icon)
         canvasDir.tag_bind(profile_btn, "<Button-1>", on_profile_click)
     except FileNotFoundError:
-        print(f"ERRO CRÍTICO: Arquivo de imagem não encontrado em: {NOTIFY_ICON}")
+        print(f"ERRO CRÍTICO: Arquivo de imagem não encontrado em: {PROFILE_ICON}")
     except Exception as e:
-        print(f"ERRO CRÍTICO ao carregar a imagem de notificação: {e}")
+        print(f"ERRO CRÍTICO ao carregar a imagem de profile: {e}")
+
+    def on_logout_click(event=None):
+        from model.model_loading.model_loading import show_loading_screen
+        from model.model_login.model_login import iniciar_gui
+        #print("Direciona para o profile da empresa")
+        try:
+            response = requests.put(
+                f"{API_URL}/login/logout",
+                params={
+                    "cod_login": current_user.cod_login
+                }
+            )
+
+            if response.status_code == 200:
+                inicio_app.destroy()
+                show_loading_screen(iniciar_gui)
+            else:
+                erro = response.json().get("detail", "Erro desconhecido.")
+                messagebox.showerror("Erro", erro)
+        except Exception as e:
+            print(f"ERRO CRÍTICO: Falha ao fazer o logout")
+    
+    try:
+        pil_logout_icon = Image.open(LOGOUT_ICON).resize((45, 50))
+        logout_icon = ImageTk.PhotoImage(pil_logout_icon)
+        canvasDir.logout_icon = logout_icon
+
+        logout_btn = canvasDir.create_image(124/2, 197, image=logout_icon)
+        canvasDir.tag_bind(logout_btn, "<Button-1>", on_logout_click)
+    except FileNotFoundError:
+        print(f"ERRO CRÍTICO: Arquivo de imagem não encontrado em: {PROFILE_ICON}")
+    except Exception as e:
+        print(f"ERRO CRÍTICO ao carregar a imagem de logout: {e}")
     
     frame = ctk.CTkFrame(
         inicio_app,
@@ -260,8 +294,14 @@ def iniciar_gui_inicio():
     pil_score3_img = Image.open(AVALIACAO_OK).resize((850, 124))
     pil_score4_img = Image.open(AVALIACAO_BOA).resize((850, 124))
     pil_score5_img = Image.open(AVALIACAO_OTIMA).resize((850, 124))
+    
+    pil_score_null_img = Image.open(AVALIACAO_NULA).resize((850, 124))
+    score_null_img = ImageTk.PhotoImage(pil_score_null_img)
+    canvas.score_null_img = score_null_img
 
-    scores_img = canvas.create_image(850/2, 387.5, image='')
+    scores_img = canvas.create_image(850/2, 387.5, image=canvas.score_null_img)
+
+    #scores_img = canvas.create_image(850/2, 387.5, image=AVALIACAO_NULA)
 
     pil_scorediar_ruim = Image.open(SCORE_RUIM).resize((849, 81))
     pil_scorediar_baixa = Image.open(SCORE_BAIXA).resize((849, 81))
@@ -269,7 +309,11 @@ def iniciar_gui_inicio():
     pil_scorediar_bom = Image.open(SCORE_BOM).resize((849, 81))
     pil_scorediar_otima = Image.open(SCORE_OTIMA).resize((849, 81))
 
-    scores_diario_img = canvas.create_image(850/2, 528, image='')
+    pil_scorediar_null = Image.open(SCORE_NULO).resize((849, 81))
+    score_diario_null_img = ImageTk.PhotoImage(pil_scorediar_null)
+    canvas.score_diario_null_img = score_diario_null_img
+
+    scores_diario_img = canvas.create_image(850/2, 528, image=canvas.score_diario_null_img)
 
 
     porc_score = canvas.create_text(
